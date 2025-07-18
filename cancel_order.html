@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking</title>
+    <style>
+        @keyframes glowing {
+            0% { text-shadow: 0 0 5px red, 0 0 10px blue, 0 0 15px green; }
+            50% { text-shadow: 0 0 10px green, 0 0 20px blue, 0 0 30px red; }
+            100% { text-shadow: 0 0 5px blue, 0 0 10px red, 0 0 15px green; }
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background-color: #111;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .hidden { display: none; }
+        
+        h1 {
+            color: #fff;
+            margin-top: 20px;
+            animation: glowing 2s infinite alternate;
+        }
+        
+        .order-steps {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+            padding: 20px;
+            background: #222;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(255,255,255,0.2);
+        }
+        
+        .step {
+            padding: 15px 25px;
+            margin: 5px;
+            background: #444;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: background 0.5s ease, transform 0.5s ease;
+            opacity: 0.5;
+            color: white;
+        }
+        
+        .active {
+            background: #4CAF50;
+            color: white;
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        
+        button {
+            padding: 12px 20px;
+            margin: 15px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+        
+        #cancel-btn, #yes-cancel, #give-rating {
+            background: red;
+            color: white;
+        }
+        #cancel-btn:hover, #yes-cancel:hover, #give-rating:hover {
+            background: darkred;
+        }
+        
+        #no-cancel {
+            background: green;
+            color: white;
+        }
+        #no-cancel:hover {
+            background: darkgreen;
+        }
+        
+        #refund-page, #cancel-page, #thank-you {
+            background: #222;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(255,255,255,0.2);
+            display: inline-block;
+            margin-top: 30px;
+        }
+        
+        #refund-amount, #redeem-code-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="order-tracking">
+        <h1>Track Your Order</h1>
+        <div class="order-steps">
+            <div class="step active">Order Taken</div>
+            <div class="step">Being Prepared</div>
+            <div class="step">Ready for Delivery</div>
+            <div class="step">Delivered</div>
+        </div>
+        <button id="cancel-btn">Cancel Order</button>
+    </div>
+
+    <div id="cancel-page" class="hidden">
+        <h1>Are you sure you want to cancel?</h1>
+        <button id="yes-cancel">Yes</button>
+        <button id="no-cancel">No</button>
+    </div>
+
+    <div id="refund-page" class="hidden">
+        <h1>Refund Summary</h1>
+        <p id="refund-details"></p>
+        <p id="refund-amount"></p>
+        <p id="redeem-code-display"></p>
+        <button id="give-rating">Give Rating</button>
+    </div>
+    
+    <div id="thank-you" class="hidden">
+        <h1>Thank You for Visiting!</h1>
+        <button id="give-rating">Give Rating</button>
+    </div>
+    
+    <script>
+        let currentStep = 0;
+        const steps = document.querySelectorAll(".step");
+        const cancelBtn = document.getElementById("cancel-btn");
+        const cancelPage = document.getElementById("cancel-page");
+        const trackingPage = document.getElementById("order-tracking");
+        const yesCancel = document.getElementById("yes-cancel");
+        const noCancel = document.getElementById("no-cancel");
+        const refundPage = document.getElementById("refund-page");
+        const refundDetails = document.getElementById("refund-details");
+        
+        const giveRatingBtns = document.querySelectorAll("#give-rating");
+        const thankYouPage = document.getElementById("thank-you");
+
+        let orderTotal = parseFloat(localStorage.getItem("finalAmount")) || 0;
+        
+        function updateOrderStatus() {
+            if (currentStep < steps.length) {
+                steps[currentStep].classList.add("active");
+                setTimeout(() => {
+                    currentStep++;
+                    updateOrderStatus();
+                }, 60000);
+            }
+        }
+        
+        cancelBtn.addEventListener("click", () => {
+            trackingPage.classList.add("hidden");
+            cancelPage.classList.remove("hidden");
+        });
+
+        yesCancel.addEventListener("click", () => {
+            cancelPage.classList.add("hidden");
+            refundPage.classList.remove("hidden");
+            let refundAmount = currentStep <= 2 ? orderTotal * 0.85 : orderTotal * 0.15;
+            refundDetails.textContent = currentStep <= 2 ? "85% refund issued to your payment number ." : "15% refund issued to your payment number. Rest will be donated if anyone take your food.";
+            refundAmountDisplay.textContent = `Refund Amount: ₹${refundAmount.toFixed(2)}`;
+        });
+
+        noCancel.addEventListener("click", () => {
+            cancelPage.classList.add("hidden");
+            trackingPage.classList.remove("hidden");
+        });
+        
+        giveRatingBtns.forEach(button => {
+            button.addEventListener("click", () => {
+                window.location.href = "thankyou.html";
+            });
+        });
+        
+        updateOrderStatus();
+    </script>
+</body>
+</html>

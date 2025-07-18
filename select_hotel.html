@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Select Your Hotel - Grab A Grub</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="form-container">
+    <h1>Select Your Hotel</h1>
+    <p>Please enter the hotel name and its address:</p>
+    <form id="hotelForm">
+      <div class="form-group">
+        <label for="hotelName">Hotel Name:</label>
+        <input type="text" id="hotelName" placeholder="Enter hotel name" required>
+      </div>
+      <div class="form-group">
+        <label for="hotelAddress">Hotel Address:</label>
+        <input type="text" id="hotelAddress" placeholder="Enter hotel address" required>
+      </div>
+      <button type="submit">Confirm Hotel</button>
+    </form>
+
+    <!-- New Button to Manually Proceed to Menu Page -->
+    <button id="proceedToMenu" style="display: none;">Proceed to Menu</button>
+  </div>
+
+  <script>
+    document.getElementById("hotelForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const hotelName = document.getElementById("hotelName").value.trim();
+      const hotelAddress = document.getElementById("hotelAddress").value.trim();
+
+      if (!hotelName || !hotelAddress) {
+        alert("Please enter both the hotel name and hotel address.");
+        return;
+      }
+
+      const hotelDetails = {
+        name: hotelName,
+        address: hotelAddress
+      };
+
+      // Save the hotel details in localStorage
+      localStorage.setItem("selectedHotel", JSON.stringify(hotelDetails));
+
+      alert("Hotel confirmed! Redirecting to the next page...");
+      window.location.href = "menu.html";
+    });
+
+    // Show the "Proceed to Menu" button after selecting a hotel
+    document.getElementById("hotelForm").addEventListener("input", function() {
+      document.getElementById("proceedToMenu").style.display = "block";
+    });
+
+    document.getElementById("proceedToMenu").addEventListener("click", function() {
+      window.location.href = "menu.html";
+    });
+  </script>
+</body>
+</html>

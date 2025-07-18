@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Grab A Grub Menu</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Grab A Grub Menu</h1>
+    <input type="file" id="uploadExcel" accept=".xlsx">
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sr. No.</th>
+                <th>Food Item</th>
+                <th>Zomato Price Range (₹)</th>
+                <th>Swiggy Price Range (₹)</th>
+                <th>Grab a Grub Price (₹)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="menuTableBody">
+            <tr>
+                <td>1</td>
+                <td>Veg Biryani</td>
+                <td>156 - 286</td>
+                <td>179 - 336</td>
+                <td>156</td>
+                <td><button onclick="addItem('Veg Biryani', 156)">Add</button></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Chicken Biryani</td>
+                <td>209 - 387</td>
+                <td>193 - 458</td>
+                <td>193</td>
+                <td><button onclick="addItem('Chicken Biryani', 193)">Add</button></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Mutton Biryani</td>
+                <td>221 - 411</td>
+                <td>123 - 387</td>
+                <td>123</td>
+                <td><button onclick="addItem('Mutton Biryani', 123)">Add</button></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Egg Biryani</td>
+                <td>230 - 414</td>
+                <td>142 - 265</td>
+                <td>142</td>
+                <td><button onclick="addItem('Egg Biryani', 142)">Add</button></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Paneer Biryani</td>
+                <td>151 - 288</td>
+                <td>116 - 281</td>
+                <td>116</td>
+                <td><button onclick="addItem('Paneer Biryani', 116)">Add</button></td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Pulao</td>
+                <td>222 - 424</td>
+                <td>131 - 468</td>
+                <td>131</td>
+                <td><button onclick="addItem('Pulao', 131)">Add</button></td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Jeera Rice</td>
+                <td>158 - 299</td>
+                <td>220 - 333</td>
+                <td>158</td>
+                <td><button onclick="addItem('Jeera Rice', 158)">Add</button></td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Dal Tadka</td>
+                <td>229 - 301</td>
+                <td>196 - 320</td>
+                <td>196</td>
+                <td><button onclick="addItem('Dal Tadka', 196)">Add</button></td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Dal Makhani</td>
+                <td>242 - 457</td>
+                <td>102 - 365</td>
+                <td>102</td>
+                <td><button onclick="addItem('Dal Makhani', 102)">Add</button></td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Butter Chicken</td>
+                <td>217 - 289</td>
+                <td>161 - 404</td>
+                <td>161</td>
+                <td><button onclick="addItem('Butter Chicken', 161)">Add</button></td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>Paneer Butter Masala</td>
+                <td>175 - 323</td>
+                <td>213 - 465</td>
+                <td>175</td>
+                <td><button onclick="addItem('Paneer Butter Masala', 175)">Add</button></td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>Chole Bhature</td>
+                <td>238 - 401</td>
+                <td>146 - 339</td>
+                <td>146</td>
+                <td><button onclick="addItem('Chole Bhature', 146)">Add</button></td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>Rajma Chawal</td>
+                <td>187 - 449</td>
+                <td>200 - 375</td>
+                <td>187</td>
+                <td><button onclick="addItem('Rajma Chawal', 187)">Add</button></td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>Aloo Paratha</td>
+                <td>186 - 349</td>
+                <td>152 - 324</td>
+                <td>152</td>
+                <td><button onclick="addItem('Aloo Paratha', 152)">Add</button></td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>Gobhi Paratha</td>
+                <td>169 - 312</td>
+                <td>112 - 376</td>
+                <td>112</td>
+                <td><button onclick="addItem('Gobhi Paratha', 112)">Add</button></td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>Paneer Paratha</td>
+                <td>168 - 366</td>
+                <td>196 - 304</td>
+                <td>168</td>
+                <td><button onclick="addItem('Paneer Paratha', 168)">Add</button></td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>Masala Dosa</td>
+                <td>204 - 327</td>
+                <td>169 - 301</td>
+                <td>169</td>
+                <td><button onclick="addItem('Masala Dosa', 169)">Add</button></td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>Plain Dosa</td>
+                <td>154 - 339</td>
+                <td>191 - 307</td>
+                <td>154</td>
+                <td><button onclick="addItem('Plain Dosa', 154)">Add</button></td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>Rava Dosa</td>
+                <td>222 - 320</td>
+                <td>204 - 270</td>
+                <td>204</td>
+                <td><button onclick="addItem('Rava Dosa', 204)">Add</button></td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>Onion Uttapam</td>
+                <td>235 - 379</td>
+                <td>221 - 293</td>
+                <td>221</td>
+                <td><button onclick="addItem('Onion Uttapam', 221)">Add</button></td>
+            </tr>
+            <tr>
+                <td>21</td>
+                <td>Idli Sambar</td>
+                <td>243 - 329</td>
+                <td>229 - 263</td>
+                <td>229</td>
+                <td><button onclick="addItem('Idli Sambar', 229)">Add</button></td>
+            </tr>
+            <tr>
+                <td>22</td>
+                <td>Vada Sambar</td>
+                <td>178 - 391</td>
+                <td>149 - 243</td>
+                <td>149</td>
+                <td><button onclick="addItem('Vada Sambar', 149)">Add</button></td>
+            </tr>
+            <tr>
+                <td>23</td>
+                <td>Schezwan Fried Rice</td>
+                <td>188 - 429</td>
+                <td>178 - 268</td>
+                <td>178</td>
+                <td><button onclick="addItem('Schezwan Fried Rice', 178)">Add</button></td>
+            </tr>
+            <tr>
+                <td>24</td>
+                <td>Chicken Fried Rice</td>
+                <td>245 - 444</td>
+                <td>125 - 437</td>
+                <td>125</td>
+                <td><button onclick="addItem('Chicken Fried Rice', 125)">Add</button></td>
+            </tr>
+            <tr>
+                <td>25</td>
+                <td>Egg Fried Rice</td>
+                <td>168 - 369</td>
+                <td>159 - 399</td>
+                <td>159</td>
+                <td><button onclick="addItem('Egg Fried Rice', 159)">Add</button></td>
+            </tr>
+            <tr>
+                <td>26</td>
+                <td>Veg Fried Rice</td>
+                <td>130 - 439</td>
+                <td>150 - 277</td>
+                <td>130</td>
+                <td><button onclick="addItem('Veg Fried Rice', 130)">Add</button></td>
+            </tr>
+            <tr>
+                <td>27</td>
+                <td>Hyderabadi Dum Biryani</td>
+                <td>226 - 387</td>
+                <td>159 - 305</td>
+                <td>159</td>
+                <td><button onclick="addItem('Hyderabadi Dum Biryani', 159)">Add</button></td>
+            </tr>
+            <tr>
+                <td>28</td>
+                <td>Tandoori Chicken</td>
+                <td>227 - 294</td>
+                <td>131 - 342</td>
+                <td>131</td>
+                <td><button onclick="addItem('Tandoori Chicken', 131)">Add</button></td>
+            </tr>
+            <tr>
+                <td>29</td>
+                <td>Malai Kofta</td>
+                <td>245 - 365</td>
+                <td>219 - 361</td>
+                <td>219</td>
+                <td><button onclick="addItem('Malai Kofta', 219)">Add</button></td>
+            </tr>
+            <tr>
+                <td>30</td>
+                <td>Shahi Paneer</td>
+                <td>165 - 283</td>
+                <td>141 - 423</td>
+                <td>141</td>
+                <td><button onclick="addItem('Shahi Paneer', 141)">Add</button></td>
+            </tr>
+            <tr>
+                <td>31</td>
+                <td>Kadhai Paneer</td>
+                <td>167 - 382</td>
+                <td>196 - 469</td>
+                <td>167</td>
+                <td><button onclick="addItem('Kadhai Paneer', 167)">Add</button></td>
+            </tr>
+            <tr>
+                <td>32</td>
+                <td>Baingan Bharta</td>
+                <td>217 - 404</td>
+                <td>136 - 272</td>
+                <td>136</td>
+                <td><button onclick="addItem('Baingan Bharta', 136)">Add</button></td>
+            </tr>
+            <tr>
+                <td>33</td>
+                <td>Palak Paneer</td>
+                <td>177 - 451</td>
+                <td>180 - 314</td>
+                <td>177</td>
+                <td><button onclick="addItem('Palak Paneer', 177)">Add</button></td>
+            </tr>
+            <tr>
+                <td>34</td>
+                <td>Dum Aloo</td>
+                <td>148 - 467</td>
+                <td>204 - 390</td>
+                <td>148</td>
+                <td><button onclick="addItem('Dum Aloo', 148)">Add</button></td>
+            </tr>
+            <tr>
+                <td>35</td>
+                <td>Methi Malai Murg</td>
+                <td>135 - 355</td>
+                <td>171 - 417</td>
+                <td>135</td>
+                <td><button onclick="addItem('Methi Malai Murg', 135)">Add</button></td>
+            </tr>
+            <tr>
+                <td>36</td>
+                <td>Kaju Curry</td>
+                <td>169 - 279</td>
+                <td>169 - 321</td>
+                <td>169</td>
+                <td><button onclick="addItem('Kaju Curry', 169)">Add</button></td>
+            </tr>
+            <tr>
+                <td>37</td>
+                <td>Bhindi Masala</td>
+                <td>142 - 332</td>
+                <td>124 - 390</td>
+                <td>124</td>
+                <td><button onclick="addItem('Bhindi Masala', 124)">Add</button></td>
+            </tr>
+            <tr>
+                <td>38</td>
+                <td>Aloo Matar</td>
+                <td>159 - 283</td>
+                <td>131 - 373</td>
+                <td>131</td>
+                <td><button onclick="addItem('Aloo Matar', 131)">Add</button></td>
+            </tr>
+            <tr>
+                <td>39</td>
+                <td>Gatte Ki Sabzi</td>
+                <td>173 - 459</td>
+                <td>198 - 319</td>
+                <td>173</td>
+                <td><button onclick="addItem('Gatte Ki Sabzi', 173)">Add</button></td>
+            </tr>
+            <tr>
+                <td>40</td>
+                <td>Mix Veg Curry</td>
+                <td>170 - 337</td>
+                <td>117 - 463</td>
+                <td>117</td>
+                <td><button onclick="addItem('Mix Veg Curry', 117)">Add</button></td>
+            </tr>
+            <tr>
+                <td>41</td>
+                <td>Vegetable Korma</td>
+                <td>239 - 409</td>
+                <td>224 - 373</td>
+                <td>224</td>
+                <td><button onclick="addItem('Vegetable Korma', 224)">Add</button></td>
+            </tr>
+            <tr>
+                <td>42</td>
+                <td>Kashmiri Dum Aloo</td>
+                <td>180 - 442</td>
+                <td>222 - 288</td>
+                <td>180</td>
+                <td><button onclick="addItem('Kashmiri Dum Aloo', 180)">Add</button></td>
+            </tr>
+            <tr>
+                <td>43</td>
+                <td>Handi Chicken</td>
+                <td>155 - 362</td>
+                <td>199 - 282</td>
+                <td>155</td>
+                <td><button onclick="addItem('Handi Chicken', 155)">Add</button></td>
+            </tr>
+            <tr>
+                <td>44</td>
+                <td>Kolhapuri Chicken</td>
+                <td>202 - 380</td>
+                <td>168 - 271</td>
+                <td>168</td>
+                <td><button onclick="addItem('Kolhapuri Chicken', 168)">Add</button></td>
+            </tr>
+            <tr>
+                <td>45</td>
+                <td>Mutton Rogan Josh</td>
+                <td>161 - 319</td>
+                <td>130 - 287</td>
+                <td>130</td>
+                <td><button onclick="addItem('Mutton Rogan Josh', 130)">Add</button></td>
+            </tr>
+            <tr>
+                <td>46</td>
+                <td>Keema Curry</td>
+                <td>241 - 378</td>
+                <td>214 - 436</td>
+                <td>214</td>
+                <td><button onclick="addItem('Keema Curry', 214)">Add</button></td>
+            </tr>
+            <tr>
+                <td>47</td>
+                <td>Paya Soup</td>
+                <td>166 - 395</td>
+                <td>225 - 345</td>
+                <td>166</td>
+                <td><button onclick="addItem('Paya Soup', 166)">Add</button></td>
+            </tr>
+            <tr>
+                <td>48</td>
+                <td>Fish Curry</td>
+                <td>237 - 328</td>
+                <td>101 - 385</td>
+                <td>101</td>
+                <td><button onclick="addItem('Fish Curry', 101)">Add</button></td>
+            </tr>
+            <tr>
+                <td>49</td>
+                <td>Prawn Masala</td>
+                <td>197 - 365</td>
+                <td>100 - 379</td>
+                <td>100</td>
+                <td><button onclick="addItem('Prawn Masala', 100)">Add</button></td>
+            </tr>
+            <tr>
+                <td>50</td>
+                <td>Goan Fish Curry</td>
+                <td>146 - 413</td>
+                <td>210 - 376</td>
+                <td>146</td>
+                <td><button onclick="addItem('Goan Fish Curry', 146)">Add</button></td>
+            </tr>
+            <tr>
+                <td>51</td>
+                <td>Malabar Prawn Curry</td>
+                <td>151 - 497</td>
+                <td>122 - 349</td>
+                <td>122</td>
+                <td><button onclick="addItem('Malabar Prawn Curry', 122)">Add</button></td>
+            </tr>
+            <tr>
+                <td>52</td>
+                <td>Lobster Curry</td>
+                <td>200 - 332</td>
+                <td>197 - 244</td>
+                <td>197</td>
+                <td><button onclick="addItem('Lobster Curry', 197)">Add</button></td>
+            </tr>
+            <tr>
+                <td>53</td>
+                <td>Crab Curry</td>
+                <td>206 - 422</td>
+                <td>109 - 312</td>
+                <td>109</td>
+                <td><button onclick="addItem('Crab Curry', 109)">Add</button></td>
+            </tr>
+            <tr>
+                <td>54</td>
+                <td>Sindhi Kadhi</td>
+                <td>148 - 376</td>
+                <td>146 - 373</td>
+                <td>146</td>
+                <td><button onclick="addItem('Sindhi Kadhi', 146)">Add</button></td>
+            </tr>
+            <tr>
+                <td>55</td>
+                <td>Paneer Tikka</td>
+                <td>132 - 266</td>
+                <td>154 - 453</td>
+                <td>132</td>
+                <td><button onclick="addItem('Paneer Tikka', 132)">Add</button></td>
+            </tr>
+            <tr>
+                <td>56</td>
+                <td>Hara Bhara Kebab</td>
+                <td>242 - 387</td>
+                <td>156 - 439</td>
+                <td>156</td>
+                <td><button onclick="addItem('Hara Bhara Kebab', 156)">Add</button></td>
+            </tr>
+            <tr>
+                <td>57</td>
+                <td>Chicken Tikka</td>
+                <td>217 - 413</td>
+                <td>215 - 291</td>
+                <td>215</td>
+                <td><button onclick="addItem('Chicken Tikka', 215)">Add</button></td>
+            </tr>
+            <tr>
+                <td>58</td>
+                <td>Seekh Kebab</td>
+                <td>249 - 279</td>
+                <td>142 - 400</td>
+                <td>142</td>
+                <td><button onclick="addItem('Seekh Kebab', 142)">Add</button></td>
+            </tr>
+            <tr>
+                <td>59</td>
+                <td>Shami Kebab</td>
+                <td>180 - 488</td>
+                <td>136 - 452</td>
+                <td>136</td>
+                <td><button onclick="addItem('Shami Kebab', 136)">Add</button></td>
+            </tr>
+            <tr>
+                <td>60</td>
+                <td>Mutton Korma</td>
+                <td>237 - 346</td>
+                <td>206 - 458</td>
+                <td>206</td>
+                <td><button onclick="addItem('Mutton Korma', 206)">Add</button></td>
+            </tr>
+            <tr>
+                <td>61</td>
+                <td>Chicken Korma</td>
+                <td>139 - 384</td>
+                <td>110 - 259</td>
+                <td>110</td>
+                <td><button onclick="addItem('Chicken Korma', 110)">Add</button></td>
+            </tr>
+            <tr>
+                <td>62</td>
+                <td>Tandoori Roti</td>
+                <td>211 - 304</td>
+                <td>151 - 480</td>
+                <td>151</td>
+                <td><button onclick="addItem('Tandoori Roti', 151)">Add</button></td>
+            </tr>
+            <tr>
+                <td>63</td>
+                <td>Butter Naan</td>
+                <td>148 - 279</td>
+                <td>165 - 473</td>
+                <td>148</td>
+                <td><button onclick="addItem('Butter Naan', 148)">Add</button></td>
+            </tr>
+            <tr>
+                <td>64</td>
+                <td>Garlic Naan</td>
+                <td>177 - 276</td>
+                <td>119 - 317</td>
+                <td>119</td>
+                <td><button onclick="addItem('Garlic Naan', 119)">Add</button></td>
+            </tr>
+            <tr>
+                <td>65</td>
+                <td>Laccha Paratha</td>
+                <td>228 - 376</td>
+                <td>109 - 374</td>
+                <td>109</td>
+                <td><button onclick="addItem('Laccha Paratha', 109)">Add</button></td>
+            </tr>
+            <tr>
+                <td>66</td>
+                <td>Rumali Roti</td>
+                <td>185 - 458</td>
+                <td>184 - 403</td>
+                <td>184</td>
+                <td><button onclick="addItem('Rumali Roti', 184)">Add</button></td>
+            </tr>
+            <tr>
+                <td>67</td>
+                <td>Cheese Naan</td>
+                <td>165 - 273</td>
+                <td>100 - 422</td>
+                <td>100</td>
+                <td><button onclick="addItem('Cheese Naan', 100)">Add</button></td>
+            </tr>
+            <tr>
+                <td>68</td>
+                <td>Stuffed Kulcha</td>
+                <td>189 - 409</td>
+                <td>201 - 419</td>
+                <td>189</td>
+                <td><button onclick="addItem('Stuffed Kulcha', 189)">Add</button></td>
+            </tr>
+            <tr>
+                <td>69</td>
+                <td>Veg Momos</td>
+                <td>249 - 395</td>
+                <td>169 - 420</td>
+                <td>169</td>
+                <td><button onclick="addItem('Veg Momos', 169)">Add</button></td>
+            </tr>
+            <tr>
+                <td>70</td>
+                <td>Chicken Momos</td>
+                <td>180 - 414</td>
+                <td>156 - 447</td>
+                <td>156</td>
+                <td><button onclick="addItem('Chicken Momos', 156)">Add</button></td>
+            </tr>
+            <tr>
+                <td>71</td>
+                <td>Spring Rolls</td>
+                <td>177 - 384</td>
+                <td>104 - 365</td>
+                <td>104</td>
+                <td><button onclick="addItem('Spring Rolls', 104)">Add</button></td>
+            </tr>
+            <tr>
+                <td>72</td>
+                <td>Cheese Balls</td>
+                <td>188 - 347</td>
+                <td>208 - 392</td>
+                <td>188</td>
+                <td><button onclick="addItem('Cheese Balls', 188)">Add</button></td>
+            </tr>
+            <tr>
+                <td>73</td>
+                <td>Aloo Tikki</td>
+                <td>243 - 336</td>
+                <td>143 - 253</td>
+                <td>143</td>
+                <td><button onclick="addItem('Aloo Tikki', 143)">Add</button></td>
+            </tr>
+            <tr>
+                <td>74</td>
+                <td>Pani Puri</td>
+                <td>156 - 288</td>
+                <td>191 - 322</td>
+                <td>156</td>
+                <td><button onclick="addItem('Pani Puri', 156)">Add</button></td>
+            </tr>
+            <tr>
+                <td>75</td>
+                <td>Dahi Puri</td>
+                <td>170 - 322</td>
+                <td>125 - 375</td>
+                <td>125</td>
+                <td><button onclick="addItem('Dahi Puri', 125)">Add</button></td>
+            </tr>
+            <tr>
+                <td>76</td>
+                <td>Sev Puri</td>
+                <td>193 - 436</td>
+                <td>138 - 480</td>
+                <td>138</td>
+                <td><button onclick="addItem('Sev Puri', 138)">Add</button></td>
+            </tr>
+            <tr>
+                <td>77</td>
+                <td>Ragda Pattice</td>
+                <td>208 - 440</td>
+                <td>195 - 443</td>
+                <td>195</td>
+                <td><button onclick="addItem('Ragda Pattice', 195)">Add</button></td>
+            </tr>
+            <tr>
+                <td>78</td>
+                <td>Samosa</td>
+                <td>164 - 432</td>
+                <td>140 - 327</td>
+                <td>140</td>
+                <td><button onclick="addItem('Samosa', 140)">Add</button></td>
+            </tr>
+            <tr>
+                <td>79</td>
+                <td>Pakora</td>
+                <td>202 - 453</td>
+                <td>103 - 325</td>
+                <td>103</td>
+                <td><button onclick="addItem('Pakora', 103)">Add</button></td>
+            </tr>
+            <tr>
+                <td>80</td>
+                <td>Kachori</td>
+                <td>177 - 321</td>
+                <td>155 - 287</td>
+                <td>155</td>
+                <td><button onclick="addItem('Kachori', 155)">Add</button></td>
+            </tr>
+            <tr>
+                <td>81</td>
+                <td>Dhokla</td>
+                <td>205 - 410</td>
+                <td>110 - 466</td>
+                <td>110</td>
+                <td><button onclick="addItem('Dhokla', 110)">Add</button></td>
+            </tr>
+            <tr>
+                <td>82</td>
+                <td>Handvo</td>
+                <td>159 - 332</td>
+                <td>118 - 360</td>
+                <td>118</td>
+                <td><button onclick="addItem('Handvo', 118)">Add</button></td>
+            </tr>
+            <tr>
+                <td>83</td>
+                <td>Jalebi</td>
+                <td>214 - 261</td>
+                <td>167 - 449</td>
+                <td>167</td>
+                <td><button onclick="addItem('Jalebi', 167)">Add</button></td>
+            </tr>
+            <tr>
+                <td>84</td>
+                <td>Gulab Jamun</td>
+                <td>128 - 388</td>
+                <td>102 - 360</td>
+                <td>102</td>
+                <td><button onclick="addItem('Gulab Jamun', 102)">Add</button></td>
+            </tr>
+            <tr>
+                <td>85</td>
+                <td>Rasgulla</td>
+                <td>210 - 444</td>
+                <td>176 - 314</td>
+                <td>176</td>
+                <td><button onclick="addItem('Rasgulla', 176)">Add</button></td>
+            </tr>
+            <tr>
+                <td>86</td>
+                <td>Rabri</td>
+                <td>228 - 487</td>
+                <td>212 - 277</td>
+                <td>212</td>
+                <td><button onclick="addItem('Rabri', 212)">Add</button></td>
+            </tr>
+            <tr>
+                <td>87</td>
+                <td>Malpua</td>
+                <td>181 - 444</td>
+                <td>140 - 245</td>
+                <td>140</td>
+                <td><button onclick="addItem('Malpua', 140)">Add</button></td>
+            </tr>
+            <tr>
+                <td>88</td>
+                <td>Gajar Ka Halwa</td>
+                <td>219 - 404</td>
+                <td>205 - 349</td>
+                <td>205</td>
+                <td><button onclick="addItem('Gajar Ka Halwa', 205)">Add</button></td>
+            </tr>
+            <tr>
+                <td>89</td>
+                <td>Moong Dal Halwa</td>
+                <td>217 - 275</td>
+                <td>149 - 339</td>
+                <td>149</td>
+                <td><button onclick="addItem('Moong Dal Halwa', 149)">Add</button></td>
+            </tr>
+            <tr>
+                <td>90</td>
+                <td>Kaju Katli</td>
+                <td>202 - 400</td>
+                <td>199 - 329</td>
+                <td>199</td>
+                <td><button onclick="addItem('Kaju Katli', 199)">Add</button></td>
+            </tr>
+            <tr>
+                <td>91</td>
+                <td>Besan Ladoo</td>
+                <td>228 - 320</td>
+                <td>210 - 247</td>
+                <td>210</td>
+                <td><button onclick="addItem('Besan Ladoo', 210)">Add</button></td>
+            </tr>
+            <tr>
+                <td>92</td>
+                <td>Motichoor Ladoo</td>
+                <td>139 - 326</td>
+                <td>154 - 270</td>
+                <td>139</td>
+                <td><button onclick="addItem('Motichoor Ladoo', 139)">Add</button></td>
+            </tr>
+            <tr>
+                <td>93</td>
+                <td>Barfi</td>
+                <td>122 - 311</td>
+                <td>110 - 349</td>
+                <td>110</td>
+                <td><button onclick="addItem('Barfi', 110)">Add</button></td>
+            </tr>
+            <tr>
+                <td>94</td>
+                <td>Kheer</td>
+                <td>248 - 415</td>
+                <td>138 - 280</td>
+                <td>138</td>
+                <td><button onclick="addItem('Kheer', 138)">Add</button></td>
+            </tr>
+            <tr>
+                <td>95</td>
+                <td>Phirni</td>
+                <td>174 - 340</td>
+                <td>211 - 420</td>
+                <td>174</td>
+                <td><button onclick="addItem('Phirni', 174)">Add</button></td>
+            </tr>
+            <tr>
+                <td>96</td>
+                <td>Mysore Pak</td>
+                <td>178 - 489</td>
+                <td>187 - 255</td>
+                <td>178</td>
+                <td><button onclick="addItem('Mysore Pak', 178)">Add</button></td>
+            </tr>
+            <tr>
+                <td>97</td>
+                <td>Coconut Ladoo</td>
+                <td>164 - 291</td>
+                <td>219 - 458</td>
+                <td>164</td>
+                <td><button onclick="addItem('Coconut Ladoo', 164)">Add</button></td>
+            </tr>
+            <tr>
+                <td>98</td>
+                <td>Chocolate Ice Cream</td>
+                <td>192 - 407</td>
+                <td>117 - 324</td>
+                <td>117</td>
+                <td><button onclick="addItem('Chocolate Ice Cream', 117)">Add</button></td>
+            </tr>
+            <tr>
+                <td>99</td>
+                <td>Vanilla Ice Cream</td>
+                <td>216 - 260</td>
+                <td>158 - 415</td>
+                <td>158</td>
+                <td><button onclick="addItem('Vanilla Ice Cream', 158)">Add</button></td>
+            </tr>
+            <tr>
+                <td>100</td>
+                <td>Mango Ice Cream</td>
+                <td>218 - 360</td>
+                <td>201 - 422</td>
+                <td>201</td>
+                <td><button onclick="addItem('Mango Ice Cream', 201)">Add</button></td>
+            </tr>
+            <tr>
+                <td>101</td>
+                <td>Pista Ice Cream</td>
+                <td>240 - 465</td>
+                <td>162 - 397</td>
+                <td>162</td>
+                <td><button onclick="addItem('Pista Ice Cream', 162)">Add</button></td>
+            </tr>
+            <tr>
+                <td>102</td>
+                <td>Butterscotch Ice Cream</td>
+                <td>242 - 486</td>
+                <td>187 - 464</td>
+                <td>187</td>
+                <td><button onclick="addItem('Butterscotch Ice Cream', 187)">Add</button></td>
+            </tr>
+            <tr>
+                <td>103</td>
+                <td>Tender Coconut Ice Cream</td>
+                <td>179 - 273</td>
+                <td>192 - 273</td>
+                <td>179</td>
+                <td><button onclick="addItem('Tender Coconut Ice Cream', 179)">Add</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Selected Items</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Food Item</th>
+                <th>Price (INR)</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody id="selectedItemsBody"></tbody>
+    </table>
+
+    <p><strong>Total Items:</strong> <span id="totalItems">0</span></p>
+    <p><strong>Total Cost:</strong> ₹<span id="totalCost">0</span></p>
+
+    <button onclick="redirectToConfirm()">Proceed to Checkout</button>
+
+    <script>
+        let selectedItems = {};
+        let totalItems = 0;
+        let totalCost = 0;
+
+        function addItem(itemName, price) {
+            if (selectedItems[itemName]) {
+                selectedItems[itemName].quantity++;
+            } else {
+                selectedItems[itemName] = { price: price, quantity: 1 };
+            }
+            totalItems++;
+            totalCost += price;
+            updateSelectedItems();
+        }
+
+        function updateSelectedItems() {
+            const selectedItemsBody = document.getElementById('selectedItemsBody');
+            selectedItemsBody.innerHTML = '';
+            for (const itemName in selectedItems) {
+                const row = document.createElement('tr');
+                const foodItemCell = document.createElement('td');
+                const priceCell = document.createElement('td');
+                const quantityCell = document.createElement('td');
+                foodItemCell.textContent = itemName;
+                priceCell.textContent = selectedItems[itemName].price;
+                quantityCell.textContent = selectedItems[itemName].quantity;
+                row.appendChild(foodItemCell);
+                row.appendChild(priceCell);
+                row.appendChild(quantityCell);
+                selectedItemsBody.appendChild(row);
+            }
+            const totalItemsSpan = document.getElementById('totalItems');
+            const totalCostSpan = document.getElementById('totalCost');
+            totalItemsSpan.textContent = totalItems;
+            totalCostSpan.textContent = totalCost.toFixed(2); // Format total cost
+        }
+
+        function redirectToConfirm() {
+            localStorage.setItem("totalCost", totalCost);
+            localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
+            window.location.href = "confirm_order.html";
+        }
+    </script>
+</body>
+</html>

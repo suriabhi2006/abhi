@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grab A Grub - Sign Up, Login & Confirm Details</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+  <style>
+    @keyframes glow {
+      0% { text-shadow: 0 0 5px red, 0 0 10px blue, 0 0 15px green; }
+      50% { text-shadow: 0 0 10px green, 0 0 20px red, 0 0 30px blue; }
+      100% { text-shadow: 0 0 5px blue, 0 0 10px green, 0 0 15px red; }
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      background: url('grab a grub.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      animation: glow 1.5s infinite alternate;
+      margin-bottom: 10px;
+    }
+
+    .form-container {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      width: 90%;
+      max-width: 400px;
+      backdrop-filter: blur(8px);
+      text-align: left;
+      margin-top: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      outline: none;
+      font-size: 16px;
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+      background: linear-gradient(45deg, #ff416c, #ff4b2b);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.3s ease, background 0.3s ease;
+      box-shadow: 0 0 10px #ff69b4, 0 0 20px #33cc33, 0 0 30px #6666ff;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #ff4b2b, #ff416c);
+    }
+
+    a {
+      color: #ff69b4;
+      font-weight: bold;
+      text-decoration: none;
+      text-shadow: 0 0 5px #ff69b4, 0 0 10px #33cc33, 0 0 15px #6666ff;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Grab A Grub 🍔</h1>
+
+  <div class="form-container" id="auth-section">
+    <div id="signup-section">
+      <h1>Sign Up</h1>
+      <form id="signupForm">
+        <div class="form-group">
+          <label for="newUsername">Username:</label>
+          <input type="text" id="newUsername" name="newUsername" placeholder="Choose a username" required>
+        </div>
+        <div class="form-group">
+          <label for="newPassword">Password:</label>
+          <input type="password" id="newPassword" name="newPassword" placeholder="Create a password" required>
+        </div>
+        <button type="submit">Sign Up</button>
+      </form>
+      <p id="signup-message"></p>
+      <p>Already have an account? <a href="#" id="show-login">Login here</a>.</p>
+    </div>
+
+    <div id="login-section" style="display: none;">
+      <h1>Login</h1>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit">Login</button>
+      </form>
+      <p id="error-message"></p>
+      <p>Don't have an account? <a href="#" id="show-signup">Sign up here</a>.</p>
+    </div>
+  </div>
+
+  <div class="form-container" id="details-section" style="display: none;">
+    <h1>Confirm Your Details</h1>
+    <form id="detailsForm">
+      <div class="form-group">
+        <label for="fullName">Full Name:</label>
+        <input type="text" id="fullName" placeholder="Enter your full name" required>
+      </div>
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="tel" id="phoneNumber" placeholder="Enter your phone number" required>
+      </div>
+      <div class="form-group">
+        <label for="addressDetail">Address:</label>
+        <input type="text" id="addressDetail" placeholder="Enter your address" required>
+      </div>
+      <div class="form-group">
+        <label for="district">District:</label>
+        <input type="text" id="district" placeholder="Enter your district" required>
+      </div>
+      <button type="submit">Confirm Details</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("show-login").addEventListener("click", function() {
+      document.getElementById("signup-section").style.display = "none";
+      document.getElementById("login-section").style.display = "block";
+    });
+
+    document.getElementById("show-signup").addEventListener("click", function() {
+      document.getElementById("signup-section").style.display = "block";
+      document.getElementById("login-section").style.display = "none";
+    });
+
+    document.getElementById("signupForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      localStorage.setItem("username", document.getElementById("newUsername").value);
+      localStorage.setItem("password", document.getElementById("newPassword").value);
+      document.getElementById("signup-message").textContent = "Sign-up successful! You can now log in.";
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      if (localStorage.getItem("username") === document.getElementById("username").value &&
+          localStorage.getItem("password") === document.getElementById("password").value) {
+        document.getElementById("auth-section").style.display = "none";
+        document.getElementById("details-section").style.display = "block";
+      } else {
+        document.getElementById("error-message").textContent = "Invalid credentials. Please try again.";
+      }
+    });
+
+    document.getElementById("detailsForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      window.location.href = "menu.html";
+    });
+  </script>
+</body>
+</html>

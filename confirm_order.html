@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Order</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; text-align: center; }
+        button { padding: 10px; background-color: #28a745; color: white; border: none; cursor: pointer; width: 100%; margin-top: 10px; transition: background-color 0.3s ease; }
+        button:hover { background-color: #218838; }
+        .confirmation, .checkmark, .next-section, .help-section, #billSection, #debitDetails, #phonePeQR { display: none; margin-top: 20px; }
+        .checkmark { font-size: 50px; color: green; animation: fadeIn 1s ease-in-out; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        img { width: 300px; height: auto; margin-top: 10px; }
+        #proceedToCheckout { background-color: #007bff; }
+        #proceedToCheckout:hover { background-color: #0056b3; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Review Your Bill</h1>
+    <div id="billSection">
+        <h2>Bill Summary</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price (₹)</th>
+                    <th>Quantity</th>
+                    <th>Total (₹)</th>
+                </tr>
+            </thead>
+            <tbody id="billDetails"></tbody>
+        </table>
+        <p><strong>Subtotal:</strong> ₹<span id="subtotal"></span></p>
+        <p><strong>Discount (10%):</strong> -₹<span id="discount"></span></p>
+        <p><strong>GST (5%):</strong> ₹<span id="gst"></span></p>
+        <p><strong>SGST (5%):</strong> ₹<span id="sgst"></span></p>
+        <h3>Total Payable: ₹<span id="finalAmount"></span></h3>
+        <button onclick="downloadBill()">Download Bill</button>
+    </div>
+
+    <h2>Enter Your Details</h2>
+    <p>Address: <input type="text" id="address" required></p>
+    <p>Payment Method: 
+        <select id="payment">
+            <option value="">Select Payment Method</option>
+            <option value="debit">Debit Card</option>
+            <option value="phonepe">PhonePe</option>
+        </select>
+    </p>
+
+    <div id="debitDetails">
+        <h3>Enter Debit Card Details</h3>
+        <p>Card Number: <input type="text" id="cardNumber" maxlength="16"></p>
+        <p>Expiry Date: <input type="text" id="expiry" placeholder="MM/YY"></p>
+        <p>CVV: <input type="password" id="cvv" maxlength="3"></p>
+    </div>
+
+    <div id="phonePeQR">
+        <h3>Scan to Pay</h3>
+        <img src="qr.jpg" alt="PhonePe QR Code">
+        <p><strong>Total Amount: ₹<span id="qrAmount"></span></strong></p>
+    </div>
+
+    <button onclick="confirmOrder()">Confirm Order</button>
+    <p class="confirmation" id="orderStatus">Your order is being prepared...</p>
+    <p class="checkmark">✔</p>
+
+    <div class="next-section" id="nextOptions">
+        <button onclick="showHelp()">Need Help?</button>
+        <button id="proceedToCheckout" onclick="proceedToCheckout()">Proceed to Checkout</button>
+        <button onclick="finalConfirmOrder()">Final Confirm Order</button>
+    </div>
+
+    <div class="help-section" id="helpSection">
+        <h2>Help & FAQs</h2>
+        <p><strong>Q:</strong> If I cancel my order, what about payment? <br> <strong>A:</strong> If you cancel before the preparation starts, 85% of the money will be refunded as coins. If canceled after preparation, only 15% will be refunded as coins.</p>
+        <p><strong>Q:</strong> What about the remaining payment? <br> <strong>A:</strong> If someone else takes your order, 50% of the amount will be refunded as coins. Otherwise, the food will be donated to orphans in your name.</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", showBill);
+
+        function showBill() {
+            let selectedItems = JSON.parse(localStorage.getItem("selectedItems")) || {};
+            let subtotal = 0;
+            let billDetails = document.getElementById("billDetails");
+            billDetails.innerHTML = "";
+
+            for (const item in selectedItems) {
+                let price = selectedItems[item].price;
+                let quantity = selectedItems[item].quantity;
+                let total = price * quantity;
+                subtotal += total;
+
+                let tr = document.createElement("tr");
+                tr.innerHTML = `<td>${item}</td><td>₹${price}</td><td>${quantity}</td><td>₹${total}</td>`;
+                billDetails.appendChild(tr);
+            }
+
+            let discount = subtotal * 0.10;
+            let gst = (subtotal - discount) * 0.05;
+            let sgst = gst;
+            let finalAmount = subtotal - discount + gst + sgst;
+
+            document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+            document.getElementById("discount").textContent = discount.toFixed(2);
+            document.getElementById("gst").textContent = gst.toFixed(2);
+            document.getElementById("sgst").textContent = sgst.toFixed(2);
+            document.getElementById("finalAmount").textContent = finalAmount.toFixed(2);
+            document.getElementById("qrAmount").textContent = finalAmount.toFixed(2);
+
+            document.getElementById("billSection").style.display = "block";
+        }
+
+        document.getElementById("payment").addEventListener("change", function () {
+            const paymentMethod = this.value;
+            document.getElementById("debitDetails").style.display = paymentMethod === "debit" ? "block" : "none";
+            document.getElementById("phonePeQR").style.display = paymentMethod === "phonepe" ? "block" : "none";
+        });
+
+        function confirmOrder() {
+            const address = document.getElementById("address").value;
+            const paymentMethod = document.getElementById("payment").value;
+
+            if (!address || !paymentMethod) {
+                alert("Please enter your address and select a payment method.");
+                return;
+            }
+
+            if (paymentMethod === "debit") {
+                const cardNumber = document.getElementById("cardNumber").value;
+                const expiry = document.getElementById("expiry").value;
+                const cvv = document.getElementById("cvv").value;
+
+                if (!cardNumber || !expiry || !cvv || cardNumber.length !== 16 || cvv.length !== 3) {
+                    alert("Please enter valid debit card details.");
+                    return;
+                }
+            }
+
+            document.getElementById("orderStatus").style.display = "block";
+            setTimeout(() => {
+                document.getElementById("orderStatus").textContent = "Your order is confirmed!";
+                document.querySelector(".checkmark").style.display = "block";
+                document.getElementById("nextOptions").style.display = "block";
+            }, 3000);
+        }
+
+        function showHelp() {
+            document.getElementById("helpSection").style.display = "block";
+        }
+
+        function proceedToCheckout() {
+            window.location.href = "cancel_order.html";
+        }
+        function downloadBill() {
+            let billContent = document.getElementById("billSection").innerHTML;
+            let billWindow = window.open("", "", "width=600,height=600");
+            billWindow.document.write("<html><head><title>Bill</title></head><body>");
+            billWindow.document.write(billContent);
+            billWindow.document.write("</body></html>");
+            billWindow.document.close();
+            billWindow.print();
+        }
+
+        function finalConfirmOrder() {
+          window.location.href = "cancel_order.html";
+            // Add any final order processing logic here
+        }
+    </script>
+</body>
+</html>

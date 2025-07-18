@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You!</title>
+    <style>
+        @keyframes rgbGlow {
+            0% { text-shadow: 0 0 10px red, 0 0 20px blue, 0 0 30px green; }
+            50% { text-shadow: 0 0 20px green, 0 0 30px red, 0 0 40px blue; }
+            100% { text-shadow: 0 0 10px blue, 0 0 20px green, 0 0 30px red; }
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background-color: #111;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        h1 {
+            font-size: 3em;
+            animation: rgbGlow 2s infinite alternate;
+        }
+        
+        .rating {
+            margin-top: 20px;
+        }
+        
+        .star {
+            font-size: 2em;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .star:hover, .star.selected {
+            color: gold;
+        }
+        
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, red, blue, green);
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        button:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Thank You for Visiting!</h1>
+    <p>Please rate your experience:</p>
+    <div class="rating">
+        <span class="star" data-value="1">&#9733;</span>
+        <span class="star" data-value="2">&#9733;</span>
+        <span class="star" data-value="3">&#9733;</span>
+        <span class="star" data-value="4">&#9733;</span>
+        <span class="star" data-value="5">&#9733;</span>
+    </div>
+    <button id="submit-rating">Submit Rating</button>
+    
+    <script>
+        const stars = document.querySelectorAll('.star');
+        let selectedRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = this.getAttribute('data-value');
+                stars.forEach(s => s.classList.remove('selected'));
+                for (let i = 0; i < selectedRating; i++) {
+                    stars[i].classList.add('selected');
+                }
+            });
+        });
+
+        document.getElementById('submit-rating').addEventListener('click', function() {
+            if (selectedRating > 0) {
+                alert(`Thank you for rating us ${selectedRating} stars!`);
+                window.location.href = "cancel_order.html"; // Redirect to cancel_order.html
+            } else {
+                alert('Please select a star rating before submitting.');
+            }
+        });
+    </script>
+</body>
+</html>

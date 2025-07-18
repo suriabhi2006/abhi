@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Order Summary</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; text-align: center; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    .total { font-size: 20px; font-weight: bold; margin-top: 10px; }
+    button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; width: 100%; }
+    button:hover { background-color: #0056b3; }
+  </style>
+</head>
+<body>
+
+  <h1>Order Summary</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Food Item</th>
+        <th>Original Price (INR)</th>
+        <th>Quantity</th>
+        <th>Total Price (INR)</th>
+        <th>Discounted Price (INR)</th>
+      </tr>
+    </thead>
+    <tbody id="orderSummary"></tbody>
+  </table>
+
+  <p class="total">Final Total Cost After 10% Discount: ₹<span id="finalCost"></span></p>
+
+    <p class="total">Potential Refund (85% if cancelled before delivery): ₹<span id="potentialRefund"></span></p>
+
+  <button onclick="proceedToCheckout()">Proceed to Checkout</button>
+
+  <script>
+    let selectedItems = JSON.parse(localStorage.getItem("selectedItems")) || {};
+    let totalCost = 0;
+    let totalDiscountedCost = 0;
+
+    const orderSummary = document.getElementById("orderSummary");
+
+    for (const item in selectedItems) {
+      let originalPrice = selectedItems[item].price;
+      let quantity = selectedItems[item].quantity;
+      let totalPrice = originalPrice * quantity;
+      let discountedPrice = totalPrice * 0.90; // 10% discount applied
+
+      totalCost += totalPrice;
+      totalDiscountedCost += discountedPrice;
+
+      let tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item}</td>
+        <td>₹${originalPrice}</td>
+        <td>${quantity}</td>
+        <td>₹${totalPrice}</td>
+        <td>₹${discountedPrice.toFixed(2)}</td>
+      `;
+      orderSummary.appendChild(tr);
+    }
+
+    document.getElementById("finalCost").textContent = totalDiscountedCost.toFixed(2);
+
+      let potentialRefund = totalDiscountedCost * 0.85;
+      document.getElementById("potentialRefund").textContent = potentialRefund.toFixed(2);
+
+    function proceedToCheckout() {
+      localStorage.setItem("finalTotal", totalDiscountedCost.toFixed(2));
+      window.location.href = "checkout.html";  // Redirects to checkout page
+    }
+  </script>
+
+</body>
+</html>
